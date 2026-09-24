@@ -23,7 +23,7 @@ import { clearLocalData, saveDraft, saveLabel, saveTransaction, setDraftPersiste
 import { downloadHandoff, downloadHandoffJson } from './exports/handoff';
 import { buildReminderIcs, buildRecipientIcs, downloadText } from './exports/calendar';
 import { downloadReceipt } from './exports/receipt';
-import { chains, manifests, isSupportedChain, DEFAULT_CHAIN, type DeploymentManifest } from './app/config';
+import { chains, manifests, isSupportedChain, DEFAULT_CHAIN, MAINNET_ONLY, type DeploymentManifest } from './app/config';
 import { diagnosticDetails, icon, escapeHtml } from './components/ui';
 import { renderActionDialog } from './components/action-dialog';
 import { animateCreateStep, animateRoutePresentation, disposeRoutePresentation } from './components/motion';
@@ -125,6 +125,7 @@ function isHistoricalSnapshotUnavailable(error: unknown): boolean {
 
 function allowlistedManifest(route: Route): DeploymentManifest | undefined {
   if (!route.chainId || !isSupportedChain(route.chainId) || !route.contract) return undefined;
+  if (MAINNET_ONLY && route.chainId !== 677) return undefined;
   const manifest = manifests[route.chainId];
   return manifest.contractAddress?.toLowerCase() === route.contract.toLowerCase() ? manifest : undefined;
 }
@@ -161,7 +162,7 @@ async function readPlanRows(readPlan: ReadPlan, chainId: Plan['chainId'], ids: b
 
 function currentListContextKey(): string | null {
   const { account, chainId } = state.wallet;
-  if (!account || !chainId) return null;
+  if (!account || !chainId || (MAINNET_ONLY && chainId !== 677)) return null;
   return `${chainId}:${account.toLowerCase()}:${state.planRole}`;
 }
 
@@ -241,8 +242,9 @@ function renderLiveError(error: unknown): string {
 
 function renderUnsupportedLocator(route: Route): string {
   const network = route.chainId && route.chainId in chains ? chains[route.chainId as keyof typeof chains].name : 'Unknown network';
+  if (MAINNET_ONLY && route.chainId !== 677) return `<div class="not-found shell-width"><div class="not-found__mark">${icon('warning')}</div><h1>This link is for another network.</h1><p>The public Lastlight app now uses BOT Chain Mainnet.</p><a class="button button--primary" href="#/plans">Go to My plans ${icon('arrow')}</a></div>`;
   const routeName = route.name === 'receive' || route.name === 'proof' || route.name === 'plan' ? route.name : 'plan';
-  return `<div class="not-found shell-width"><div class="not-found__mark">${icon('warning')}</div><p class="eyebrow">Plan unavailable</p><h1>This plan is not available here.</h1><p>Lastlight did not load or infer data for ${escapeHtml(network)}. The requested contract <code>${escapeHtml(route.contract ?? 'missing')}</code> and plan <code>${escapeHtml(route.vaultId ?? 'missing')}</code> are not backed by a configured deployment in this workspace.</p><form class="locator-form" data-locator-route="${routeName}"><div class="field"><label class="field__label" for="locator-chain">Network</label><select id="locator-chain" name="chain"><option value="968" ${route.chainId === 968 ? 'selected' : ''}>BOT Testnet · 968</option><option value="677" ${route.chainId === 677 ? 'selected' : ''}>BOT Mainnet · 677</option></select></div><div class="field"><label class="field__label" for="locator-contract">Contract address</label><input id="locator-contract" name="contract" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="0x…" value="${escapeHtml(route.contract ?? '')}"></div><div class="field"><label class="field__label" for="locator-id">Plan ID</label><input id="locator-id" name="id" type="text" inputmode="numeric" pattern="[1-9][0-9]*" value="${escapeHtml(route.vaultId ?? '')}"></div><button class="button button--primary" type="submit">Check locator ${icon('arrow')}</button></form><div>${`<a class="button button--secondary" href="#/">${icon('arrow')}<span>Back to overview</span></a>`}${`<a class="button button--quiet" href="#/?section=how-it-works">${icon('external')}<span>How it works</span></a>`}</div></div>`;
+  return `<div class="not-found shell-width"><div class="not-found__mark">${icon('warning')}</div><p class="eyebrow">Plan unavailable</p><h1>This plan is not available here.</h1><p>Lastlight did not load or infer data for ${escapeHtml(network)}. The requested contract <code>${escapeHtml(route.contract ?? 'missing')}</code> and plan <code>${escapeHtml(route.vaultId ?? 'missing')}</code> are not backed by a configured deployment in this workspace.</p><form class="locator-form" data-locator-route="${routeName}"><div class="field"><label class="field__label" for="locator-chain">Network</label><select id="locator-chain" name="chain">${MAINNET_ONLY ? '' : `<option value="968" ${route.chainId === 968 ? 'selected' : ''}>BOT Testnet · 968</option>`}<option value="677" ${route.chainId === 677 ? 'selected' : ''}>BOT Mainnet · 677</option></select></div><div class="field"><label class="field__label" for="locator-contract">Contract address</label><input id="locator-contract" name="contract" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="0x…" value="${escapeHtml(route.contract ?? '')}"></div><div class="field"><label class="field__label" for="locator-id">Plan ID</label><input id="locator-id" name="id" type="text" inputmode="numeric" pattern="[1-9][0-9]*" value="${escapeHtml(route.vaultId ?? '')}"></div><button class="button button--primary" type="submit">Check locator ${icon('arrow')}</button></form><div>${`<a class="button button--secondary" href="#/">${icon('arrow')}<span>Back to overview</span></a>`}${`<a class="button button--quiet" href="#/?section=how-it-works">${icon('external')}<span>How it works</span></a>`}</div></div>`;
 }
 
 function render(options: { focus?: string } = {}): void {
@@ -258,6 +260,10 @@ function render(options: { focus?: string } = {}): void {
   const hashChanged = currentHash !== renderedHash;
   const firstRender = !root.firstElementChild;
   const nextRoute = parseRoute();
+  if (MAINNET_ONLY && nextRoute.name === 'plans' && nextRoute.chainId && nextRoute.chainId !== 677) {
+    navigate('/plans');
+    return;
+  }
   if (nextRoute.name === 'plans' && nextRoute.chainId && !state.wallet.connected && state.wallet.chainId !== nextRoute.chainId) {
     state.wallet = { ...state.wallet, chainId: nextRoute.chainId };
     state.activePlan = undefined;
@@ -392,7 +398,7 @@ async function hydrateLivePlan(route: Route): Promise<void> {
 async function hydrateLivePlans(force = false, quiet = false, snapshotRetry = 0): Promise<void> {
   const account = state.wallet.account;
   const chainId = state.wallet.chainId;
-  if (!account || !chainId || !isSupportedChain(chainId) || !manifests[chainId].contractAddress) return;
+  if (!account || !chainId || !isSupportedChain(chainId) || (MAINNET_ONLY && chainId !== 677) || !manifests[chainId].contractAddress) return;
   const key = `${chainId}:${account.toLowerCase()}:${state.planRole}`;
   if (activeListHydrationKey === key || (!force && loadedListKey === key)) return;
   const generation = ++listHydrationGeneration;
@@ -456,12 +462,12 @@ async function hydrateLivePlans(force = false, quiet = false, snapshotRetry = 0)
 }
 
 function walletBalanceKey(): string | null {
-  if (!state.wallet.connected || !state.wallet.account || !isSupportedChain(state.wallet.chainId)) return null;
+  if (!state.wallet.connected || !state.wallet.account || !isSupportedChain(state.wallet.chainId) || (MAINNET_ONLY && state.wallet.chainId !== 677)) return null;
   return `${state.walletBalanceVersion}:${state.wallet.chainId}:${state.wallet.account.toLowerCase()}`;
 }
 
 function createChainId(): 968 | 677 | 31337 {
-  return isSupportedChain(state.wallet.chainId) ? state.wallet.chainId : DEFAULT_CHAIN;
+  return MAINNET_ONLY ? 677 : isSupportedChain(state.wallet.chainId) ? state.wallet.chainId : DEFAULT_CHAIN;
 }
 
 async function hydrateCreateChainObservation(): Promise<void> {
@@ -490,6 +496,7 @@ async function hydrateCreateChainObservation(): Promise<void> {
 
 async function hydrateCreateFeeEstimate(): Promise<void> {
   if (parseRoute().name !== 'create' || !state.wallet.connected || !state.wallet.account || state.draft.step < 2) return;
+  if (MAINNET_ONLY && state.wallet.chainId !== 677) return;
   const chainId = createChainId();
   const intentKey = createIntentKey(state, chainId);
   const recipient = normalizeAddress(state.draft.recipient);
@@ -690,13 +697,13 @@ function persistDraft(): void {
 }
 
 function isConfiguredDefaultContract(value: string): boolean {
-  const selectedChainId = isSupportedChain(state.wallet.chainId) ? state.wallet.chainId : 968;
+  const selectedChainId = createChainId();
   const configured = manifests[selectedChainId].contractAddress;
   return Boolean(configured && value.toLowerCase() === configured.toLowerCase());
 }
 
 function shortTimingRequired(): boolean {
-  const selectedChainId = isSupportedChain(state.wallet.chainId) ? state.wallet.chainId : 968;
+  const selectedChainId = createChainId();
   return selectedChainId === 677 && (state.draft.inactivityPeriod < 30 * 24 * 60 * 60 || state.draft.gracePeriod < 7 * 24 * 60 * 60);
 }
 
@@ -1243,12 +1250,6 @@ async function performPlanAction(action: 'heartbeat' | 'change-successor' | 'can
 }
 
 function bindPageEvents(): void {
-  document.querySelectorAll<HTMLButtonElement>('.js-switch-testnet').forEach((element) => element.addEventListener('click', () => {
-    const selector = document.querySelector<HTMLSelectElement>('#network-select');
-    if (!selector) return;
-    selector.value = '968';
-    selector.dispatchEvent(new Event('change', { bubbles: true }));
-  }));
   document.querySelectorAll<HTMLButtonElement>('.js-shell-connect').forEach((element) => element.addEventListener('click', () => {
     document.querySelector<HTMLButtonElement>('#connect-wallet')?.click();
   }));
@@ -1466,14 +1467,14 @@ function bindPageEvents(): void {
     render();
   });
   document.querySelectorAll<HTMLButtonElement>('.js-create-submit').forEach((element) => element.addEventListener('click', async () => {
-    const chainId = (state.wallet.chainId ?? 968) as keyof typeof manifests;
+    const chainId = (MAINNET_ONLY ? 677 : state.wallet.chainId ?? DEFAULT_CHAIN) as keyof typeof manifests;
     const manifest = manifests[chainId];
     if (!state.wallet.account) {
       showTray('Connect a wallet first', 'The live flow compares the owner, network, balance, and fee before a signature. No transaction was sent.', 'warning');
       return;
     }
     if (!isSupportedChain(chainId as number)) {
-      showTray('Unsupported wallet network', 'Select BOT Testnet or BOT Mainnet before preparing a write.', 'warning');
+      showTray('Unsupported wallet network', MAINNET_ONLY ? 'Switch your wallet to BOT Chain Mainnet before preparing a plan.' : 'Select BOT Testnet or BOT Mainnet before preparing a write.', 'warning');
       return;
     }
     if (state.wallet.chainId !== chainId) {

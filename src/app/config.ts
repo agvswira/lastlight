@@ -57,6 +57,7 @@ export const MAINNET_READY = Boolean(
 );
 
 export const DEFAULT_CHAIN: ChainId = MAINNET_READY ? 677 : 968;
+export const MAINNET_ONLY = import.meta.env.PROD && MAINNET_READY;
 export const PROTOCOL_VERSION = '3.0.0';
 
 export function chainName(chainId: number | undefined): string {

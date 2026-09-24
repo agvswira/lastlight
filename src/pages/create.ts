@@ -3,12 +3,12 @@ import { formatDate, formatDuration, isObservationFresh, validatePolicy } from '
 import { amountHasValidPrecision, formatNativeAmount, parseNativeAmount } from '../domain/amount';
 import { hasBadMixedChecksum, isAddress, isZeroAddress } from '../domain/address';
 import type { AppState } from '../app/state';
-import { chains, DEFAULT_CHAIN, isSupportedChain, manifests } from '../app/config';
+import { chains, DEFAULT_CHAIN, MAINNET_ONLY, isSupportedChain, manifests } from '../app/config';
 import type { ChainId, DurationUnit } from '../domain/types';
 import { inlineNotice } from './shared';
 
 function selectedChainId(state: AppState): ChainId {
-  return isSupportedChain(state.wallet.chainId) ? state.wallet.chainId : DEFAULT_CHAIN;
+  return MAINNET_ONLY ? 677 : isSupportedChain(state.wallet.chainId) ? state.wallet.chainId : DEFAULT_CHAIN;
 }
 
 export function createIntentKey(state: AppState, chainId: ChainId): string | null {
@@ -22,6 +22,7 @@ export function createIntentKey(state: AppState, chainId: ChainId): string | nul
 function estimatedFeeText(state: AppState, chainId: ChainId): string {
   const intentKey = createIntentKey(state, chainId);
   if (!state.wallet.connected || !state.wallet.account) return 'Connect wallet to estimate';
+  if (MAINNET_ONLY && state.wallet.chainId !== 677) return 'Switch wallet to Mainnet';
   if (!intentKey) return 'Complete amount and recipient first';
   if (state.createFeeEstimate?.intentKey === intentKey) return `${formatNativeAmount(BigInt(state.createFeeEstimate.feeWei))} · ${state.createFeeEstimate.gasLimit} gas`;
   if (state.createFeeEstimateLoading) return 'Estimating from the selected RPC…';
@@ -99,7 +100,7 @@ export function renderCreate(state: AppState): string {
   return `<div class="create-page">
     <section class="product-hero"><div class="shell-width product-hero__inner"><div class="product-hero__copy"><h1>Create plan</h1><p class="lede">Choose a recipient, check-in schedule, and amount.</p></div><img class="product-hero__art" src="./assets/lastlight-hero.webp" alt="" aria-hidden="true"></div></section>
     <section class="shell-width builder-layout"><div class="builder-form">
-      ${state.wallet.connected && state.wallet.chainId === 677 && !manifests[677].contractAddress ? `<div class="network-switch-notice">${inlineNotice('Your wallet is on BOT Mainnet', 'Lastlight is deployed on BOT Testnet. Switch your wallet to Testnet before funding a test plan.', 'warning')}${button('Switch to BOT Testnet', { variant: 'secondary', className: 'js-switch-testnet', icon: 'arrow' })}</div>` : ''}
+      ${MAINNET_ONLY && state.wallet.connected && state.wallet.chainId !== 677 ? `<div class="network-switch-notice">${inlineNotice('Switch your wallet to Mainnet', 'Lastlight plans are created on BOT Chain Mainnet.', 'warning')}<button class="button button--secondary" type="button" data-switch-mainnet>Switch to Mainnet ${icon('arrow')}</button></div>` : ''}
       <ol class="stepper" aria-label="Create plan steps">${stepLabels.map((label, index) => `<li class="stepper__item ${draft.step === index ? 'is-current' : ''} ${index < draft.step && stepComplete(state, index, chainId) ? 'is-complete' : ''}"${draft.step === index ? ' aria-current="step"' : ''}><button type="button" data-create-step="${index}"><span>${index + 1}</span><strong>${label}</strong></button></li>`).join('')}</ol>
       ${draft.step === 0 ? renderRecipientStep(state, owner) : ''}${draft.step === 1 ? renderTimingStep(state, chainId) : ''}${draft.step === 2 ? renderAmountStep(state, chain.symbol, chainId) : ''}${draft.step === 3 ? renderReviewStep(state, chain.name, chain.symbol, chainId, owner, reviewReady, shortTimingRequired) : ''}
       ${draft.step === 0 ? `<label class="check-field draft-opt-in"><input id="draft-persistence" type="checkbox" data-draft-persistence ${state.draftPersistenceEnabled ? 'checked' : ''} ${state.storageAvailable ? '' : 'disabled'}><span><strong>Remember this draft on this device</strong>${state.storageAvailable ? '' : '<small>Unavailable in this browser. Reloading may clear your draft.</small>'}</span></label>` : ''}
@@ -131,7 +132,7 @@ function renderAmountStep(state: AppState, chainSymbol: string, chainId: ChainId
   const draft = state.draft;
   const invalid = state.createValidationAttemptedStep === 2 || (draft.amount.length > 0 && (!amountHasValidPrecision(draft.amount) || parseNativeAmount(draft.amount) === 0n));
   const amountHelpId = invalid ? 'plan-amount-error' : 'plan-amount-help';
-  const balanceText = state.walletBalance !== undefined ? `${escapeHtml(formatNativeAmount(state.walletBalance))} available` : state.walletBalanceLoading ? 'Reading chain balance…' : state.walletBalanceError ? 'Balance read unavailable' : state.wallet.connected ? 'Reading chain balance…' : 'Connect wallet to check';
+  const balanceText = MAINNET_ONLY && state.wallet.connected && state.wallet.chainId !== 677 ? 'Switch wallet to Mainnet' : state.walletBalance !== undefined ? `${escapeHtml(formatNativeAmount(state.walletBalance))} available` : state.walletBalanceLoading ? 'Reading chain balance…' : state.walletBalanceError ? 'Balance read unavailable' : state.wallet.connected ? 'Reading chain balance…' : 'Connect wallet to check';
   return `<section class="builder-step" aria-labelledby="step-heading"><h2 id="step-heading">Amount</h2><p class="step-copy">This amount is funded once. Leave room for the network fee.</p><div class="field ${invalid ? 'field--error' : ''}">${fieldLabel('plan-amount', 'Amount')}<div class="amount-input"><input id="plan-amount" data-draft-field="amount" type="text" inputmode="decimal" autocomplete="off" value="${escapeHtml(draft.amount)}" aria-describedby="${amountHelpId}" aria-invalid="${invalid}"><span>${escapeHtml(chainSymbol)}</span></div>${invalid ? '<small id="plan-amount-error" class="field__error">Use a positive decimal amount with up to 18 places.</small>' : '<small id="plan-amount-help" class="field__help">The full amount will be held by the plan.</small>'}</div><div class="amount-review"><div><span>Connected balance</span><strong>${balanceText}</strong></div><div><span>Estimated fee</span><strong>${escapeHtml(estimatedFeeText(state, chainId))}</strong></div></div>${state.createFeeEstimateError ? diagnosticDetails(state.createFeeEstimateError) : ''}</section>`;
 }
 

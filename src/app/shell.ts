@@ -1,4 +1,4 @@
-import { chains, DEFAULT_CHAIN, MAINNET_READY, chainName, manifests } from './config';
+import { chains, DEFAULT_CHAIN, MAINNET_ONLY, MAINNET_READY, chainName, manifests } from './config';
 import type { AppState } from './state';
 import { navigate } from './router';
 import type { DiscoveredWallet } from '../chain/wallet';
@@ -53,7 +53,7 @@ export function renderShell(content: string, state: AppState, routeName: string,
   const walletLabel = state.wallet.connected && state.wallet.account ? shortAddress(state.wallet.account) : 'Connect wallet';
   const localAnvilAvailable = import.meta.env.DEV;
   const routeChain = routeChainId === 968 || routeChainId === 677 || (localAnvilAvailable && routeChainId === 31337) ? routeChainId as ChainId : undefined;
-  const selectedChainId = state.wallet.chainId === 968 || state.wallet.chainId === 677 || (localAnvilAvailable && state.wallet.chainId === 31337)
+  const selectedChainId = MAINNET_ONLY ? 677 : state.wallet.chainId === 968 || state.wallet.chainId === 677 || (localAnvilAvailable && state.wallet.chainId === 31337)
     ? state.wallet.chainId
     : routeChain ?? DEFAULT_CHAIN;
   const selectedChain = chains[selectedChainId];
@@ -63,36 +63,40 @@ export function renderShell(content: string, state: AppState, routeName: string,
     : '';
   const localAnvilOption = localAnvilAvailable ? `<option value="31337" ${selectedChainId === 31337 ? 'selected' : ''}>Local Anvil</option>` : '';
   const testnetReady = Boolean(manifests[968].contractAddress && manifests[968].verificationStatus === 'verified');
-  const showNetworkSelector = localAnvilAvailable || (MAINNET_READY && testnetReady) || Boolean(unsupportedChainOption) || (state.wallet.connected && selectedChainId !== DEFAULT_CHAIN);
+  const showNetworkSelector = !MAINNET_ONLY && (localAnvilAvailable || (MAINNET_READY && testnetReady) || Boolean(unsupportedChainOption) || (state.wallet.connected && selectedChainId !== DEFAULT_CHAIN));
   const networkControl = showNetworkSelector
     ? `<label class="network-select footer-network-select"><span class="sr-only">Network</span><select id="network-select" aria-label="Network">${unsupportedChainOption}<option value="968" ${selectedChainId === 968 ? 'selected' : ''}>BOT Testnet</option>${MAINNET_READY || selectedChainId === 677 ? `<option value="677" ${selectedChainId === 677 ? 'selected' : ''}>BOT Mainnet</option>` : ''}${localAnvilOption}</select></label>`
     : `<span class="footer-current-network">${escapeHtml(selectedChain.name)}</span>`;
-  const headerNetworkLabel = unsupportedChainOption ? 'Unsupported network' : selectedChain.shortName;
+  const headerNetworkLabel = MAINNET_ONLY ? 'Mainnet' : unsupportedChainOption ? 'Unsupported network' : selectedChain.shortName;
   const pendingTransactions = state.transactions.filter(({ transaction }) => ['validating', 'simulating', 'review-ready', 'submitted', 'confirming', 'unknown', 'pending-timeout', 'broadcast-unknown', 'repriced', 'replaced', 'reorged', 'awaiting-wallet'].includes(transaction.status)).length;
   const recentTransactions = state.transactions.filter(({ transaction }) => transaction.status !== 'idle').slice(0, 4);
   const transactionCenter = recentTransactions.length ? `<div class="transaction-center" aria-label="Recent transaction status"><strong>Transaction status</strong>${recentTransactions.map(({ transaction }) => `<div class="transaction-center__row"><span>${escapeHtml(transaction.action ?? 'Action')}</span><small>${escapeHtml(transactionStatusLabel(transaction.status))}${transaction.hash ? ` · ${escapeHtml(`${transaction.hash.slice(0, 10)}…`)}` : ''}</small></div>`).join('')}</div>` : '';
   const walletGuidance = state.wallet.error?.startsWith('No wallet browser was found')
     ? `<div class="wallet-help" role="note"><span>Open this page in a wallet-enabled browser or extension.</span><button class="button button--quiet wallet-help__copy js-copy" data-copy="${escapeHtml(window.location.href)}" type="button">${icon('copy')}<span>Copy page link</span></button></div>`
     : '';
-  const headerNetworkTone = unsupportedChainOption ? 'header-network--warning' : selectedManifest.contractAddress && selectedManifest.verificationStatus === 'verified' ? 'header-network--ready' : '';
+  const wrongNetwork = MAINNET_ONLY && state.wallet.connected && state.wallet.chainId !== 677;
+  const headerNetworkTone = wrongNetwork || (!MAINNET_ONLY && unsupportedChainOption) ? 'header-network--warning' : selectedManifest.contractAddress && selectedManifest.verificationStatus === 'verified' ? 'header-network--ready' : '';
   const walletControl = state.wallet.connected && state.wallet.account
     ? `<details class="wallet-account"><summary class="button button--primary wallet-button" aria-label="Wallet ${escapeHtml(walletLabel)}. Open account options">${icon('wallet')}<span>${escapeHtml(walletLabel)}</span></summary><div class="wallet-account__menu"><span class="wallet-account__eyebrow">Connected wallet</span><strong>${escapeHtml(state.wallet.providerName ?? 'Browser wallet')}</strong><small>${escapeHtml(walletLabel)}</small><button type="button" data-change-wallet>Change wallet</button><button type="button" data-disconnect-wallet>Disconnect from Lastlight</button><p>Switch accounts in your wallet extension. Disconnecting here ends this site's session; manage site permissions in the extension.</p></div></details>`
     : `<button class="button button--primary wallet-button" id="connect-wallet" type="button" aria-label="${state.wallet.connecting ? 'Connecting wallet' : 'Connect wallet'}" ${state.wallet.connecting ? 'disabled' : ''}>${icon('wallet')}<span>${state.wallet.connecting ? 'Connecting…' : 'Connect wallet'}</span></button>`;
-  const headerControls = `<span class="header-network ${headerNetworkTone}" aria-label="Current network: ${escapeHtml(headerNetworkLabel)}"><span class="header-network__dot"></span>${escapeHtml(headerNetworkLabel)}</span>${pendingTransactions ? `<button class="header-pending" type="button" data-reconcile-transactions>${pendingTransactions} pending</button>` : ''}${walletControl}`;
+  const headerControls = `<span class="header-network ${headerNetworkTone}" aria-label="Lastlight network: ${escapeHtml(headerNetworkLabel)}"><span class="header-network__dot"></span>${escapeHtml(headerNetworkLabel)}</span>${wrongNetwork ? '<button class="header-switch-network" type="button" data-switch-mainnet>Switch wallet to Mainnet</button>' : ''}${pendingTransactions ? `<button class="header-pending" type="button" data-reconcile-transactions>${pendingTransactions} pending</button>` : ''}${walletControl}`;
   const localDataControl = `<details class="footer-utility"><summary>Data & transactions</summary><div class="footer-utility__panel"><small>Drafts are saved only when you opt in. Labels and action notes stay in this browser.</small>${transactionCenter}${pendingTransactions ? `<small>${pendingTransactions} transaction record${pendingTransactions === 1 ? '' : 's'} need${pendingTransactions === 1 ? 's' : ''} checking.</small><button type="button" data-reconcile-transactions>Check transaction status</button>` : ''}<button type="button" data-clear-local-data>Clear local data</button></div></details>`;
   return `<div class="app-shell">
-    <header class="site-header"><div class="shell-width site-header__inner">
+    <header class="site-header ${wrongNetwork ? 'site-header--wrong-network' : ''}"><div class="shell-width site-header__inner">
       <a href="#/" class="wordmark" aria-label="Lastlight home"><img class="wordmark__mark" src="./assets/lastlight-mark.png" alt="" width="40" height="40"><span class="wordmark__text">Lastlight</span></a>
       <nav class="desktop-nav" aria-label="Primary navigation"><a class="${routeName === 'home' ? 'is-current' : ''}" ${routeName === 'home' ? 'aria-current="page"' : ''} href="#/">Overview</a><a class="${routeName === 'plans' ? 'is-current' : ''}" ${routeName === 'plans' ? 'aria-current="page"' : ''} href="#/plans">My plans</a><a class="${routeName === 'create' ? 'is-current' : ''}" ${routeName === 'create' ? 'aria-current="page"' : ''} href="#/create">Create plan</a></nav>
       <div class="header-actions">${headerControls}${state.wallet.error ? `<p class="wallet-error" role="status">${escapeHtml(state.wallet.error)}</p>` : ''}${walletGuidance}
     </div></div><nav class="mobile-nav shell-width" aria-label="Mobile navigation"><a class="${routeName === 'home' ? 'is-current' : ''}" ${routeName === 'home' ? 'aria-current="page"' : ''} href="#/">Overview</a><a class="${routeName === 'plans' ? 'is-current' : ''}" ${routeName === 'plans' ? 'aria-current="page"' : ''} href="#/plans">My plans</a><a class="${routeName === 'create' ? 'is-current' : ''}" ${routeName === 'create' ? 'aria-current="page"' : ''} href="#/create">Create plan</a></nav></header>
     <main id="main-content" tabindex="-1">${content}</main>
     <div id="transaction-tray" class="transaction-tray" role="status" aria-live="polite" aria-atomic="true" hidden></div>
-    <footer class="site-footer"><div class="shell-width footer-grid"><div><a href="#/" class="wordmark wordmark--footer"><img class="wordmark__mark" src="./assets/lastlight-mark.png" alt="" width="36" height="36"><span class="wordmark__text">Lastlight</span></a><p>Owner-controlled continuity plans.</p></div><div><p class="footer-label">Workspace</p><a href="#/create">Create plan</a><a href="#/plans">My plans</a><a href="#/launch">Deployment status</a>${localDataControl}</div><div><p class="footer-label">Network</p>${networkControl}<span class="footer-muted">${selectedManifest.contractAddress && selectedManifest.verificationStatus === 'verified' ? 'Deployment verified' : 'Deployment pending'}</span><a href="https://botchain.ai" target="_blank" rel="noreferrer">BOT Chain ${icon('external')}</a><a href="${escapeHtml(selectedChain.explorerUrl)}" target="_blank" rel="noreferrer">${escapeHtml(selectedChain.shortName)} Explorer ${icon('external')}</a></div></div><div class="shell-width footer-bottom"><span>© ${new Date().getFullYear()} Lastlight</span></div></footer>
+    <footer class="site-footer"><div class="shell-width footer-grid"><div><a href="#/" class="wordmark wordmark--footer"><img class="wordmark__mark" src="./assets/lastlight-mark.png" alt="" width="36" height="36"><span class="wordmark__text">Lastlight</span></a><p>Owner-controlled continuity plans.</p></div><div><p class="footer-label">Workspace</p><a href="#/create">Create plan</a><a href="#/plans">My plans</a><a href="#/launch">Deployment status</a>${localDataControl}</div><div><p class="footer-label">Network</p>${networkControl}<span class="footer-muted">${selectedManifest.contractAddress && selectedManifest.verificationStatus === 'verified' ? 'Deployment verified' : 'Deployment pending'}</span><a class="botchain-brand" href="https://www.botchain.ai/" target="_blank" rel="noreferrer"><img src="./assets/botchain-mark.png" alt="" width="28" height="28"><span>Built on BOT Chain</span>${icon('external')}</a><a href="${escapeHtml(selectedManifest.contractAddress ? `${selectedChain.explorerUrl}/address/${selectedManifest.contractAddress}` : selectedChain.explorerUrl)}" target="_blank" rel="noreferrer">${selectedManifest.contractAddress ? 'View Lastlight contract' : `${selectedChain.shortName} Explorer`} ${icon('external')}</a></div></div><div class="shell-width footer-bottom"><span>© ${new Date().getFullYear()} Lastlight</span></div></footer>
   </div>`;
 }
 
 export function bindShell(state: AppState, onStateChange: () => void): void {
+  document.querySelectorAll<HTMLButtonElement>('[data-switch-mainnet]').forEach((button) => button.addEventListener('click', () => {
+    void switchSelectedNetwork(677, state.wallet.chainId, state, onStateChange);
+  }));
   document.querySelector<HTMLButtonElement>('#connect-wallet')?.addEventListener('click', () => { void connectWallet(state, onStateChange, false); });
   document.querySelector<HTMLButtonElement>('[data-change-wallet]')?.addEventListener('click', () => {
     document.querySelector<HTMLDetailsElement>('.wallet-account')?.removeAttribute('open');

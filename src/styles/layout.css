@@ -18,6 +18,9 @@
   .header-network__dot { width: 7px; height: 7px; flex: 0 0 auto; background: var(--color-text-muted); border-radius: 50%; }
   .header-network--ready .header-network__dot { background: var(--color-accent); }
   .header-network--warning .header-network__dot { background: var(--color-warning-ink); }
+  .header-switch-network { min-height: 36px; padding: 0 10px; color: var(--color-text); background: transparent; border: 1px solid var(--color-border-control); font: inherit; font-size: 12px; font-weight: 750; cursor: pointer; }
+  .header-switch-network:hover { border-color: var(--color-accent); }
+  .header-switch-network:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
   .header-pending { min-height: 44px; padding: 0 9px; color: var(--color-warning-ink); background: transparent; border: 0; font-size: 13px; font-weight: 750; white-space: nowrap; }
   .header-pending:hover { color: var(--color-text); background: var(--color-surface-muted); }
   .header-create { white-space: nowrap; }
@@ -64,6 +67,8 @@
   .footer-grid > div:not(:first-child) { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
   .footer-grid a { display: inline-flex; align-items: center; min-height: 36px; color: var(--color-on-stage); font-size: 14px; text-decoration: none; }
   .footer-grid a:hover { color: var(--color-accent); }
+  .footer-grid .botchain-brand { gap: 8px; }
+  .botchain-brand img { width: 28px; height: 28px; object-fit: contain; }
   .footer-grid .icon { display: inline-block; width: 13px; height: 13px; vertical-align: -2px; }
   .footer-label { margin-bottom: 6px !important; color: var(--color-on-stage-muted) !important; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
   .footer-muted { color: var(--color-on-stage-muted); font-size: 14px; }
