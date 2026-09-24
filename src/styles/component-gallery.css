@@ -1,0 +1,30 @@
+@layer components {
+  .component-gallery { padding: 70px 0 110px; }
+  .component-gallery__header { padding-bottom: 55px; }
+  .component-gallery__header h1 { max-width: 12ch; margin: 0 0 16px; font: 58px/1.04 var(--font-display); letter-spacing: -.045em; }
+  .component-gallery__header p:not(.eyebrow) { max-width: 66ch; color: var(--color-text-muted); }
+  .component-gallery__header .button { margin-top: 20px; }
+  .component-gallery__section { padding-bottom: 70px; }
+  .component-gallery__grid { display: grid; gap: 18px; }
+  .component-gallery__grid--horizons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .component-gallery__grid--plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .component-gallery__card { min-width: 0; padding: 17px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0; box-shadow: var(--shadow-soft); }
+  .component-gallery__card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 38px; margin-bottom: 12px; }
+  .component-gallery__label { margin-bottom: 12px; color: var(--color-text-muted); font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .component-gallery__card .horizon { height: 100%; }
+  .component-gallery__control-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .component-gallery__feedback { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .component-gallery__dialog-preview { max-width: 620px; padding: 18px; background: var(--color-stage); border-radius: 0; }
+  .component-gallery__dialog-preview .action-dialog { position: static; display: block; width: 100%; max-width: none; margin: 0; }
+
+  @media (max-width: 1199px) {
+    .component-gallery__grid--horizons { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 767px) {
+    .component-gallery { padding-top: 50px; }
+    .component-gallery__header h1 { font-size: 45px; }
+    .component-gallery__grid--plans { grid-template-columns: 1fr; }
+    .component-gallery__dialog-preview { padding: 9px; }
+  }
+}

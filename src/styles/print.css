@@ -1,0 +1,6 @@
+@media print {
+  .site-header, .site-footer, .button, .action-row, .header-actions, .proof-aside, .plan-aside, .receive-aside, .skip-link { display: none !important; }
+  body, main, .receipt-card { background: #fff !important; color: #000 !important; }
+  .shell-width { width: 100%; }
+  .receipt-card { box-shadow: none !important; border: 1px solid #999; }
+}

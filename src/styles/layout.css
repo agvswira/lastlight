@@ -1,0 +1,89 @@
+@layer layout {
+  .app-shell { display: flex; min-height: 100vh; min-height: 100dvh; flex-direction: column; }
+  .shell-width { width: min(1200px, calc(100% - 80px)); margin-inline: auto; }
+  .site-header { position: sticky; top: 0; z-index: 5; min-height: 72px; background: rgba(11,16,18,.96); border-bottom: 1px solid var(--color-border); backdrop-filter: blur(18px); }
+  .site-header__inner { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; min-height: 76px; gap: 24px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 7px; width: fit-content; min-height: 44px; color: var(--color-text); text-decoration: none; }
+  .wordmark__mark { display: block; width: 40px; height: 40px; flex: 0 0 auto; }
+  .wordmark__text { color: inherit; font-size: 20px; font-weight: 800; letter-spacing: -.045em; }
+  .site-header .wordmark:hover { color: var(--color-accent); }
+  .desktop-nav { display: flex; align-items: center; gap: 12px; }
+  .desktop-nav a, .mobile-nav a { position: relative; display: inline-flex; align-items: center; min-height: 48px; padding: 0 14px; color: var(--color-text-muted); font-size: 15px; font-weight: 700; text-decoration: none; transition: color .16s ease; }
+  .desktop-nav a:hover, .mobile-nav a:hover { color: var(--color-text); }
+  .desktop-nav a.is-current, .mobile-nav a.is-current { color: var(--color-accent); }
+  .desktop-nav a::after, .mobile-nav a::after { position: absolute; right: 14px; bottom: 0; left: 14px; height: 2px; content: ''; background: var(--color-accent); transform: scaleX(0); transform-origin: left; transition: transform .16s ease; }
+  .desktop-nav a:hover::after, .desktop-nav a.is-current::after, .mobile-nav a:hover::after, .mobile-nav a.is-current::after { transform: scaleX(1); }
+  .header-actions { display: flex; align-items: center; justify-content: flex-end; justify-self: end; gap: 16px; }
+  .header-network { display: inline-flex; align-items: center; gap: 8px; color: var(--color-text-muted); font-size: 13px; font-weight: 750; white-space: nowrap; }
+  .header-network__dot { width: 7px; height: 7px; flex: 0 0 auto; background: var(--color-text-muted); border-radius: 50%; }
+  .header-network--ready .header-network__dot { background: var(--color-accent); }
+  .header-network--warning .header-network__dot { background: var(--color-warning-ink); }
+  .header-pending { min-height: 44px; padding: 0 9px; color: var(--color-warning-ink); background: transparent; border: 0; font-size: 13px; font-weight: 750; white-space: nowrap; }
+  .header-pending:hover { color: var(--color-text); background: var(--color-surface-muted); }
+  .header-create { white-space: nowrap; }
+  .wallet-error { position: absolute; top: calc(100% + 8px); right: 0; z-index: 7; max-width: 300px; margin: 0; padding: 9px 11px; color: var(--color-warning-ink); background: var(--color-warning-soft); border: 1px solid var(--color-warning-border); border-radius: 0; font-size: 13px; box-shadow: var(--shadow-soft); }
+  .wallet-help { position: absolute; top: calc(100% + 52px); right: 0; z-index: 7; display: flex; align-items: center; gap: 10px; width: min(340px, calc(100vw - 40px)); padding: 10px 11px; color: var(--color-text-muted); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0; font-size: 13px; line-height: 1.35; box-shadow: var(--shadow-soft); }
+  .wallet-help__copy { flex: 0 0 auto; min-height: 30px; padding: 0 8px; font-size: 13px; }
+  .network-select { position: relative; }
+  .network-select select { appearance: none; min-height: var(--control-height); padding: 0 32px 0 14px; color: var(--color-text); background: var(--color-surface); border: 1px solid var(--color-border-control); border-radius: 0; font-size: 14px; font-weight: 700; }
+  .network-select select:hover { background: var(--color-surface-muted); border-color: var(--color-text-muted); }
+  .network-select select:focus-visible, .wallet-menu summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+  .network-select::after { position: absolute; right: 13px; top: 19px; content: ''; width: 7px; height: 7px; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: rotate(45deg); pointer-events: none; }
+  .wallet-button { white-space: nowrap; }
+  .wallet-menu { position: relative; }
+  .wallet-menu summary { display: grid; width: 44px; height: 48px; place-items: center; color: var(--color-text-muted); border-radius: 0; cursor: pointer; font-weight: 900; letter-spacing: .12em; list-style: none; }
+  .wallet-menu summary::-webkit-details-marker { display: none; }
+  .wallet-menu summary:hover, .wallet-menu[open] summary { color: var(--color-text); background: var(--color-surface-muted); }
+  .wallet-menu__panel { position: absolute; right: 0; top: calc(100% + 8px); z-index: 8; display: grid; gap: 7px; width: 240px; padding: 15px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0; box-shadow: var(--shadow-float); }
+  .wallet-menu__panel strong { font-size: 13px; }
+  .wallet-menu__panel small { color: var(--color-text-muted); font-size: 13px; line-height: 1.4; }
+  .wallet-menu__panel button { justify-self: start; min-height: 44px; padding: 0 4px; color: var(--color-warning-ink); background: transparent; border: 0; font-size: 14px; font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
+  .wallet-account { position: relative; }
+  .wallet-account summary { list-style: none; cursor: pointer; }
+  .wallet-account summary::-webkit-details-marker { display: none; }
+  .wallet-account summary:focus-visible, .wallet-account__menu button:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+  .wallet-account__menu { position: absolute; top: calc(100% + 10px); right: 0; z-index: 8; display: grid; gap: 4px; width: min(280px, calc(100vw - 32px)); padding: 18px; color: var(--color-text); background: var(--color-surface); border: 1px solid var(--color-border); box-shadow: var(--shadow-float); }
+  .wallet-account__eyebrow { color: var(--color-accent); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+  .wallet-account__menu strong { margin-top: 3px; font-size: 16px; }
+  .wallet-account__menu small { margin-bottom: 10px; color: var(--color-text-muted); font-size: 13px; }
+  .wallet-account__menu button { min-height: 42px; padding: 0 10px; color: var(--color-text); background: var(--color-surface-muted); border: 1px solid var(--color-border); font: inherit; font-size: 14px; font-weight: 700; text-align: left; cursor: pointer; }
+  .wallet-account__menu button:hover { border-color: var(--color-accent); }
+  .wallet-account__menu button[data-disconnect-wallet] { color: var(--color-text-muted); background: transparent; }
+  .wallet-account__menu p { margin: 10px 0 0; color: var(--color-text-muted); font-size: 12px; line-height: 1.45; }
+  .transaction-center { display: grid; gap: 5px; margin: 3px 0; padding-top: 8px; border-top: 1px solid var(--color-border); }
+  .transaction-center__row { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+  .transaction-center__row small { color: var(--color-text-muted); text-align: right; }
+  .mobile-nav { display: none; }
+  main { flex: 1 0 auto; min-height: 500px; }
+  .site-footer { margin-top: 32px; padding: 34px 0 18px; background: var(--color-stage); color: var(--color-on-stage); }
+  .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 36px; padding-bottom: 24px; }
+  .wordmark--footer { color: var(--color-on-stage); }
+  .wordmark--footer .wordmark__mark { width: 36px; height: 36px; }
+  .footer-grid p { max-width: 25ch; margin: 0; color: var(--color-on-stage-muted); }
+  .footer-grid > div:first-child > p { margin-top: 8px; }
+  .footer-grid > div:not(:first-child) { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+  .footer-grid a { display: inline-flex; align-items: center; min-height: 36px; color: var(--color-on-stage); font-size: 14px; text-decoration: none; }
+  .footer-grid a:hover { color: var(--color-accent); }
+  .footer-grid .icon { display: inline-block; width: 13px; height: 13px; vertical-align: -2px; }
+  .footer-label { margin-bottom: 6px !important; color: var(--color-on-stage-muted) !important; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .footer-muted { color: var(--color-on-stage-muted); font-size: 14px; }
+  .footer-current-network { color: var(--color-on-stage); font-size: 15px; font-weight: 750; }
+  .footer-network-select select { min-width: 160px; }
+  .footer-utility { width: 100%; margin-top: 0; }
+  .footer-utility summary { display: inline-flex; align-items: center; min-height: 36px; color: var(--color-on-stage-muted); cursor: pointer; font-size: 14px; list-style: none; }
+  .footer-utility summary::-webkit-details-marker { display: none; }
+  .footer-utility summary::after { width: 7px; height: 7px; margin-left: 10px; content: ''; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: rotate(45deg); }
+  .footer-utility[open] summary::after { transform: rotate(225deg); }
+  .footer-utility summary:hover { color: var(--color-on-stage); }
+  .footer-utility__panel { display: grid; gap: 12px; width: min(100%, 300px); margin-top: 8px; padding: 17px; background: var(--color-surface); border: 1px solid var(--color-border); }
+  .footer-utility__panel small { color: var(--color-text-muted); font-size: 13px; line-height: 1.45; }
+  .footer-utility__panel button { justify-self: start; min-height: 44px; padding: 0; color: var(--color-warning-ink); background: transparent; border: 0; font-size: 14px; font-weight: 750; text-align: left; }
+  .footer-utility__panel button:hover { color: var(--color-text); }
+  .footer-bottom { display: flex; justify-content: space-between; gap: 20px; padding-top: 12px; color: var(--color-on-stage-muted); font-size: 13px; }
+}
+
+@media (max-width: 1023px) {
+  .site-header__inner { min-height: 72px; }
+  .desktop-nav { display: none; }
+  .mobile-nav { display: flex; align-items: center; gap: 4px; min-height: 48px; border-top: 1px solid var(--color-border); }
+}

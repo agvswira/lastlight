@@ -1,0 +1,49 @@
+{
+  "name": "lastlight",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --pretty false",
+    "lint": "tsc -b --pretty false",
+    "test:unit": "vitest run tests/domain.test.ts",
+    "test:e2e": "node --import tsx/esm --test tests/e2e.test.ts",
+    "test:e2e:local": "npm run contracts:build && node --import tsx/esm --test tests/e2e-local.test.ts",
+    "test:preview": "node --import tsx/esm --test tests/production-preview.test.ts",
+    "prod:audit": "node scripts/production-audit.mjs",
+    "perf:audit": "node scripts/performance-audit.mjs",
+    "deps:audit": "node scripts/dependency-audit.mjs",
+    "check": "npm run contracts:build && npm run abi:export && npm run typecheck && npm run lint && npm run build && npm run prod:audit && npm run test:unit && npm run test:preview && npm run contracts:test && npm run test:e2e && npm run test:e2e:local && npm run evidence:verify",
+    "contracts:build": "forge build",
+    "contracts:test": "forge test -vvv",
+    "abi:export": "node scripts/abi-export.mjs",
+    "preflight": "node scripts/rpc-preflight.mjs",
+    "evidence:verify": "node scripts/verify-evidence.mjs",
+    "deploy:testnet": "node scripts/deploy.mjs --network testnet",
+    "lifecycle:testnet": "node scripts/lifecycle.mjs --network testnet",
+    "release:prepare": "node scripts/release-prepare.mjs",
+    "deploy:mainnet": "node scripts/deploy.mjs --network mainnet"
+  },
+  "dependencies": {
+    "@noble/hashes": "1.8.0",
+    "@fontsource-variable/manrope": "5.1.1",
+    "@fontsource/dm-serif-display": "5.1.1",
+    "gsap": "3.12.5",
+    "viem": "2.56.8"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@types/node": "22.10.2",
+    "playwright": "1.63.0",
+    "tsx": "4.23.15",
+    "typescript": "5.7.2",
+    "vite": "6.4.3",
+    "vitest": "5.0.1"
+  }
+}

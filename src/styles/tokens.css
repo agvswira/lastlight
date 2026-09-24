@@ -1,0 +1,45 @@
+@layer tokens {
+  :root {
+    --color-bg: #0b1012;
+    --color-surface: #11191c;
+    --color-surface-muted: #172226;
+    --color-text: #f3f5eb;
+    --color-text-muted: #a2b1a9;
+    --color-stage: #080d0f;
+    --color-stage-raised: #142025;
+    --color-on-stage: #f3f5eb;
+    --color-on-stage-muted: #a2b1a9;
+    --color-accent: #d9f06a;
+    --color-accent-ink: #151a0b;
+    --color-success-ink: #91d8ac;
+    --color-success-on-dark: #a2edbd;
+    --color-warning-ink: #f0bd70;
+    --color-warning-soft: #211d14;
+    --color-warning-border: #68532e;
+    --color-danger-ink: #ff9d98;
+    --color-danger-on-dark: #ffb3a9;
+    --color-border: #29383b;
+    --color-border-control: #56676b;
+    --color-focus: #d9f06a;
+    --color-focus-dark: #d9f06a;
+    --shadow-panel: 0 22px 58px rgba(0, 0, 0, .24);
+    --shadow-soft: 0 10px 26px rgba(0, 0, 0, .18);
+    --shadow-float: 0 22px 56px rgba(0, 0, 0, .36);
+    --font-display: var(--font-ui);
+    --font-ui: 'Manrope Variable', Manrope, Arial, system-ui, sans-serif;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+    --space-9: 96px;
+    --radius-control: 0px;
+    --radius-panel: 0px;
+    --radius-stage: 0px;
+    --control-height: 48px;
+    --control-padding: 18px;
+  }
+}

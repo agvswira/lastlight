@@ -1,0 +1,10 @@
+@layer motion {
+  .button, .moment, .plan-row, .about-card, .side-panel, .site-header a, .wallet-button, .input-action { transition: color .2s ease, background-color .2s ease, border-color .2s ease, transform .2s cubic-bezier(.16, 1, .3, 1), box-shadow .2s ease; }
+  .field input, .field select, .field textarea, .plans-search input, .stepper__item button, .plan-tab, .faq-item summary { transition: color .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease; }
+  .button:active:not(:disabled), .wallet-button:active { transform: translateY(1px); }
+  .horizon__active, .horizon__grace, .horizon__cursor, .horizon__milestone { transition: left .55s ease, width .55s ease, opacity .35s ease, background-color .35s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+}

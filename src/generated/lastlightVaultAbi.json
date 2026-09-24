@@ -1,0 +1,941 @@
+[
+  {
+    "type": "fallback",
+    "stateMutability": "payable"
+  },
+  {
+    "type": "receive",
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "MAX_GRACE_PERIOD",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_INACTIVITY_PERIOD",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MAX_PAGE_SIZE",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MIN_GRACE_PERIOD",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MIN_INACTIVITY_PERIOD",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "PROTOCOL_VERSION",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "cancelVault",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "recipient",
+        "type": "address",
+        "internalType": "address payable"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "changeSuccessor",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "newSuccessor",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claim",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "recipient",
+        "type": "address",
+        "internalType": "address payable"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "createVault",
+    "inputs": [
+      {
+        "name": "successor",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "inactivityPeriod",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "gracePeriod",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "getVault",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct LastlightVault.Vault",
+        "components": [
+          {
+            "name": "owner",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "successor",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "previousSuccessor",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "settlementRecipient",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "depositedAmount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "amount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "createdAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "lastHeartbeat",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "inactivityPeriod",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "gracePeriod",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "settledAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "createdBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "lastHeartbeatBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "successorChangedBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "settledBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "settlement",
+            "type": "uint8",
+            "internalType": "enum LastlightVault.Settlement"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getVaultIdsByOwner",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "offset",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "limit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "ids",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      },
+      {
+        "name": "total",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getVaultIdsBySuccessor",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "offset",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "limit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "ids",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      },
+      {
+        "name": "total",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getVaultStatus",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum LastlightVault.VaultStatus"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getVaultView",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "view_",
+        "type": "tuple",
+        "internalType": "struct LastlightVault.VaultView",
+        "components": [
+          {
+            "name": "vault",
+            "type": "tuple",
+            "internalType": "struct LastlightVault.Vault",
+            "components": [
+              {
+                "name": "owner",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "successor",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "previousSuccessor",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "settlementRecipient",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "depositedAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "amount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "createdAt",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "lastHeartbeat",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "inactivityPeriod",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "gracePeriod",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "settledAt",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "createdBlock",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "lastHeartbeatBlock",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "successorChangedBlock",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "settledBlock",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "settlement",
+                "type": "uint8",
+                "internalType": "enum LastlightVault.Settlement"
+              }
+            ]
+          },
+          {
+            "name": "status",
+            "type": "uint8",
+            "internalType": "enum LastlightVault.VaultStatus"
+          },
+          {
+            "name": "checkInBy",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "claimableAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "observedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "observedBlock",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "heartbeat",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "nextVaultId",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "totalClaimed",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "totalFunded",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "totalLocked",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "totalReturned",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "Heartbeat",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "previousHeartbeat",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "newHeartbeat",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SuccessorChanged",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "previousSuccessor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newSuccessor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "VaultCancelled",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "VaultClaimed",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "successor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "VaultCreated",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "successor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "inactivityPeriod",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "gracePeriod",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "createdAt",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "DirectPaymentDisabled",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "EmptyVault",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidAmount",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidGracePeriod",
+    "inputs": [
+      {
+        "name": "supplied",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidInactivityPeriod",
+    "inputs": [
+      {
+        "name": "supplied",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidPageSize",
+    "inputs": [
+      {
+        "name": "supplied",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidRecipient",
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidSuccessor",
+    "inputs": [
+      {
+        "name": "successor",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NativeTransferFailed",
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NotVaultOwner",
+    "inputs": [
+      {
+        "name": "caller",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NotVaultSuccessor",
+    "inputs": [
+      {
+        "name": "caller",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "successor",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "OwnerWindowClosed",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "claimableAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ReentrancyGuardReentrantCall",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "SameSuccessor",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "SuccessorIsOwner",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "VaultAlreadyCancelled",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "VaultAlreadyClaimed",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "VaultNotClaimable",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "claimableAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "VaultNotFound",
+    "inputs": [
+      {
+        "name": "vaultId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  }
+]

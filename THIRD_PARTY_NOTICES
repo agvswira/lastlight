@@ -1,0 +1,11 @@
+Lastlight currently uses:
+
+- Vite, licensed under the MIT License.
+- TypeScript, licensed under the Apache License 2.0.
+- viem, licensed under the MIT License.
+- axe-core and its Playwright integration, licensed under the Mozilla Public License 2.0: https://github.com/dequelabs/axe-core/blob/develop/LICENSE
+- GSAP 3.12.5, distributed under GreenSock's Standard "no charge" license: https://gsap.com/standard-license.
+- Manrope Variable and DM Serif Display font files, OFL-1.1, bundled through the pinned `@fontsource` packages.
+- OpenZeppelin Contracts v5.0.2 `ReentrancyGuard.sol`, MIT License, vendored from commit `dbb6104ce834628e473d2173bbc9d47f81a9eec3` under `lib/openzeppelin-contracts/`.
+
+The frontend uses local font files with system fallbacks. No remote font request or third-party analytics is required. Review and retain the exact package notices after dependency installation.
