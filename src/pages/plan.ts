@@ -60,7 +60,7 @@ export function renderPlan(state: AppState, plan: Plan): string {
         <h1>${escapeHtml(title)}</h1>
         <div class="plan-hero__meta">${networkBadge(plan.chainId)}${statusPill(statusLabel(plan.status), tone)}</div>
       </div>
-      <img class="product-hero__art" src="/assets/lastlight-hero.webp" alt="" aria-hidden="true">
+      <img class="product-hero__art" src="./assets/lastlight-hero.webp" alt="" aria-hidden="true">
     </div></section>
     <div class="shell-width plan-layout">
       <div class="plan-main">

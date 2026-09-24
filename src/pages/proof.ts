@@ -36,13 +36,13 @@ export function renderProof(plan: Plan, readIssue?: ProofReadIssue): string {
         <p class="lede">Current plan state and the transaction evidence available for this plan.</p>
         <div class="proof-hero__meta">${networkBadge(plan.chainId)}${statusPill(isRecorded ? 'Recorded view' : statusLabel(plan.status), isRecorded ? 'neutral' : formatStatusTone(plan.status))}</div>
       </div>
-      <img class="product-hero__art" src="/assets/lastlight-hero.webp" alt="" aria-hidden="true">
+      <img class="product-hero__art" src="./assets/lastlight-hero.webp" alt="" aria-hidden="true">
     </div></section>
     <div class="shell-width proof-layout">
       <div class="proof-main">
         ${readNotice}
         <article class="receipt-card">
-          <div class="receipt-card__top"><span class="receipt-card__brand"><img class="wordmark__mark" src="/assets/lastlight-mark.png" alt="" width="32" height="32"><span>Lastlight</span></span><span>${isRecorded ? 'Recorded view' : latestReceipt ? 'Confirmed receipt' : 'Current chain read'}</span></div>
+          <div class="receipt-card__top"><span class="receipt-card__brand"><img class="wordmark__mark" src="./assets/lastlight-mark.png" alt="" width="32" height="32"><span>Lastlight</span></span><span>${isRecorded ? 'Recorded view' : latestReceipt ? 'Confirmed receipt' : 'Current chain read'}</span></div>
           <h2>${escapeHtml(statusLabel(plan.status))}</h2>
           <strong class="receipt-amount">${escapeHtml(formatNativeAmount(plan.depositedAmount))}</strong>
           <dl class="receipt-details">

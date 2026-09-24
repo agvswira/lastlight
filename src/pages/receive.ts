@@ -50,7 +50,7 @@ export function renderReceive(state: AppState, plan: Plan): string {
         <p class="lede">See when this plan can be claimed and what your wallet needs to do.</p>
         <div class="receive-hero__meta">${networkBadge(plan.chainId)}${statusPill(statusLabel(plan.status), formatStatusTone(plan.status))}</div>
       </div>
-      <img class="product-hero__art" src="/assets/lastlight-hero.webp" alt="" aria-hidden="true">
+      <img class="product-hero__art" src="./assets/lastlight-hero.webp" alt="" aria-hidden="true">
     </div></section>
     <div class="shell-width receive-layout">
       <div class="receive-main">
