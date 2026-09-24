@@ -1,4 +1,8 @@
-# Lastlight
+<p align="center">
+  <img src="public/assets/lastlight-mark.png" alt="Lastlight logo" width="120">
+</p>
+
+<h1 align="center">Lastlight</h1>
 
 Lastlight is an owner-controlled BOT continuity plan on BOT Chain. An owner funds a plan for one recipient and keeps control by checking in before a deadline. If the owner misses the check-in and the extra time expires, only the named recipient can claim the deposit. The claim requires a wallet transaction; funds never move automatically.
 
@@ -22,7 +26,7 @@ The contract, rather than the browser, enforces who may act and when. Plan statu
 | BOT Chain Mainnet | 677 | [`0x8a16dA8aAB1db133b3d1CFFbEC1761C0441B322D`](https://scan.botchain.ai/address/0x8a16dA8aAB1db133b3d1CFFbEC1761C0441B322D) | [Deployment transaction](https://scan.botchain.ai/tx/0x0d1fd3d99f8a6cf89bbdf8399d55145f08b24fa1e9edb2aeae9e9715086d7840); source verified on the explorer |
 | BOT Chain Testnet | 968 | [`0x4A13EC346A86536077Ddb67100DcbF6Ec06EdD28`](https://scan.bohr.life/address/0x4A13EC346A86536077Ddb67100DcbF6Ec06EdD28) | Source verified; a funded 3 BOT plan was [created](https://scan.bohr.life/tx/0xf2cdccdbdf33ac77506dfd7bd52596456e2d6f59971d8f8f627527f1be9e297a) and [claimed](https://scan.bohr.life/tx/0x7d72c62c811834141f140a0cbbdf18e70751cb0d14a4902decd46bdb97c4e181) |
 
-Lastlight is officially launched on BOT Chain Mainnet. The public app uses mainnet only. The funded create-to-claim path was completed on testnet; the mainnet contract has passed read-only checks and transaction simulation, but a funded mainnet plan has not yet been run.
+Lastlight is officially launched on BOT Chain Mainnet. The public app uses mainnet only. A 0.01 BOT plan was [created](https://scan.botchain.ai/tx/0xfb0683b62952bc7a77886d0fa923222f065497f20164e15c915f9fa91f5d3d42) and [checked in](https://scan.botchain.ai/tx/0xa81d483c82d0270c9fbedf32ec8cb1b279760739c8a976c7b3616b1db365ca35) on mainnet. The funded create-to-claim path was completed on testnet; a mainnet recipient claim has not yet been completed.
 
 ## Run locally
 
