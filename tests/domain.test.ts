@@ -100,12 +100,12 @@ test('released launch record includes dated deployment, proof links, scope, and 
     verificationStatus: 'verified',
   } satisfies DeploymentManifest;
   const markup = renderLaunch(liveManifest);
-  assert.match(markup, /Lastlight is live on BOT Chain Mainnet/);
+  assert.match(markup, /Lastlight is officially launched on BOT Chain Mainnet/);
   assert.match(markup, /September 22, 2026/);
-  assert.match(markup, /Open the deployment transaction/);
-  assert.match(markup, /Tested scope/);
-  assert.match(markup, /Known limitations/);
-  assert.match(markup, /verified source/);
+  assert.match(markup, /Deployment transaction/);
+  assert.match(markup, /read-only mainnet checks passed/);
+  assert.match(markup, /funded create-to-claim path succeeded on testnet/);
+  assert.match(markup, /Verified source/);
   assert.equal(formatDeploymentDate(null), 'Unavailable');
 });
 

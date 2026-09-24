@@ -103,10 +103,11 @@ export function bindShell(state: AppState, onStateChange: () => void): void {
     void connectWallet(state, onStateChange, true);
   });
   document.querySelector<HTMLButtonElement>('[data-disconnect-wallet]')?.addEventListener('click', async () => {
-    const { clearSelectedProvider } = await import('../chain/wallet');
+    const { clearSelectedProvider, rememberWalletDisconnect } = await import('../chain/wallet');
     unsubscribeWalletEvents?.();
     unsubscribeWalletEvents = undefined;
     clearSelectedProvider();
+    rememberWalletDisconnect();
     state.wallet = { connected: false, connecting: false, chainId: state.wallet.chainId };
     invalidateDraftReview(state);
     clearWalletView(state);
@@ -161,7 +162,7 @@ async function connectWallet(state: AppState, onStateChange: () => void, switchi
     onStateChange();
   }
   try {
-    const { connectInjectedWallet, discoverWalletProviders, getInjectedProvider, subscribeWallet } = await import('../chain/wallet');
+    const { connectInjectedWallet, discoverWalletProviders, getInjectedProvider, rememberWalletProvider, subscribeWallet } = await import('../chain/wallet');
     const providers = await discoverWalletProviders();
     const selected = await chooseWalletProvider(providers, switching);
     if (!selected) {
@@ -178,28 +179,51 @@ async function connectWallet(state: AppState, onStateChange: () => void, switchi
     unsubscribeWalletEvents?.();
     unsubscribeWalletEvents = undefined;
     state.wallet = connected;
+    rememberWalletProvider(selected.id);
     invalidateDraftReview(state);
     clearWalletView(state);
     const provider = getInjectedProvider();
-    if (provider) unsubscribeWalletEvents = subscribeWallet(provider, {
-      accountsChanged: (accounts) => {
-        const account = accounts[0]?.toLowerCase() as `0x${string}` | undefined;
-        state.wallet = { ...state.wallet, connected: Boolean(account), account, providerName: account ? state.wallet.providerName : undefined };
-        invalidateDraftReview(state);
-        clearWalletView(state);
-        onStateChange();
-      },
-      chainChanged: (chainId) => {
-        state.wallet = { ...state.wallet, chainId };
-        invalidateDraftReview(state);
-        clearWalletView(state);
-        onStateChange();
-      },
-    });
+    if (provider) subscribeToWallet(provider, subscribeWallet, state, onStateChange);
     onStateChange();
   } catch {
     state.wallet = switching ? { ...previousWallet, error: 'Could not change wallets. Try again.' } : { connected: false, connecting: false, chainId: previousWallet.chainId, error: 'Wallet connection failed. Try again.' };
     onStateChange();
+  } finally {
+    walletConnectionPending = false;
+  }
+}
+
+function subscribeToWallet(provider: import('../chain/wallet').Eip1193Provider, subscribeWallet: typeof import('../chain/wallet').subscribeWallet, state: AppState, onStateChange: () => void): void {
+  unsubscribeWalletEvents = subscribeWallet(provider, {
+    accountsChanged: (accounts) => {
+      const account = accounts[0]?.toLowerCase() as `0x${string}` | undefined;
+      state.wallet = { ...state.wallet, connected: Boolean(account), account, providerName: account ? state.wallet.providerName : undefined };
+      invalidateDraftReview(state);
+      clearWalletView(state);
+      onStateChange();
+    },
+    chainChanged: (chainId) => {
+      state.wallet = { ...state.wallet, chainId };
+      invalidateDraftReview(state);
+      clearWalletView(state);
+      onStateChange();
+    },
+  });
+}
+
+export async function restoreWalletSession(state: AppState, onStateChange: () => void): Promise<void> {
+  if (walletConnectionPending || state.wallet.connected) return;
+  walletConnectionPending = true;
+  try {
+    const { getInjectedProvider, restoreAuthorizedWallet, subscribeWallet } = await import('../chain/wallet');
+    const restored = await restoreAuthorizedWallet();
+    if (!restored?.connected) return;
+    state.wallet = restored;
+    const provider = getInjectedProvider();
+    if (provider) subscribeToWallet(provider, subscribeWallet, state, onStateChange);
+    onStateChange();
+  } catch {
+    return;
   } finally {
     walletConnectionPending = false;
   }

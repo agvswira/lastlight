@@ -15,7 +15,7 @@ import { renderLaunch } from './pages/launch';
 import { renderNotFound } from './pages/not-found';
 import { parseRoute, navigate, type Route } from './app/router';
 import { createAppState, defaultDraft, type AppState } from './app/state';
-import { renderShell, bindShell } from './app/shell';
+import { renderShell, bindShell, restoreWalletSession } from './app/shell';
 import { displayObservedTimestamp, formatDate, formatDuration, getReminderLead, hasRequiredConfirmations, isObservationFresh, readPollDelayMs, validatePolicy } from './domain/policy';
 import { hasBadMixedChecksum, isAddress, isZeroAddress, normalizeAddress } from './domain/address';
 import { amountHasValidPrecision, formatNativeAmount, parseNativeAmount } from './domain/amount';
@@ -1632,7 +1632,7 @@ function bindPageEvents(): void {
 }
 
 window.addEventListener('hashchange', () => render());
-window.addEventListener('load', () => render());
+window.addEventListener('load', () => { render(); void restoreWalletSession(state, render); });
 window.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') render();
   else {
@@ -1647,4 +1647,4 @@ window.addEventListener('focus', () => {
   if (route.name === 'plans' && state.wallet.connected) void hydrateLivePlans(true, true);
   void reconcileTransactions();
 });
-if (document.readyState !== 'loading') { render(); void reconcileTransactions(); }
+if (document.readyState !== 'loading') { render(); void reconcileTransactions(); void restoreWalletSession(state, render); }

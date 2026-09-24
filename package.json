@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
     "lint": "tsc -b --pretty false",
-    "test:unit": "vitest run tests/domain.test.ts",
+    "test:unit": "vitest run tests/domain.test.ts tests/wallet.test.ts",
     "test:e2e": "node --import tsx/esm --test tests/e2e.test.ts",
     "test:e2e:local": "npm run contracts:build && node --import tsx/esm --test tests/e2e-local.test.ts",
     "test:preview": "node --import tsx/esm --test tests/production-preview.test.ts",

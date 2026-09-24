@@ -19,6 +19,28 @@ declare global {
 
 let selectedProvider: Eip1193Provider | undefined;
 let discoveryPromise: Promise<DiscoveredWallet[]> | undefined;
+const PROVIDER_KEY = 'lastlight:v1:wallet-provider';
+const DISCONNECTED_KEY = 'lastlight:v1:wallet-disconnected';
+
+function walletStorage(): Storage | null {
+  try { return window.localStorage; } catch { return null; }
+}
+
+export function rememberWalletProvider(id: string): void {
+  try {
+    const storage = walletStorage();
+    storage?.setItem(PROVIDER_KEY, id);
+    storage?.removeItem(DISCONNECTED_KEY);
+  } catch {}
+}
+
+export function rememberWalletDisconnect(): void {
+  try {
+    const storage = walletStorage();
+    storage?.removeItem(PROVIDER_KEY);
+    storage?.setItem(DISCONNECTED_KEY, '1');
+  } catch {}
+}
 
 function parseChainId(value: unknown): number | undefined {
   if (typeof value === 'number') return value;
@@ -72,6 +94,28 @@ export async function connectInjectedWallet(providerOverride?: Eip1193Provider, 
     const message = error instanceof Error ? error.message : '';
     return { connected: false, connecting: false, error: /denied|rejected|cancel/i.test(message) ? 'Connection cancelled in your wallet.' : 'Wallet connection failed. Try again from the wallet, or continue in read-only mode.' };
   }
+}
+
+export async function restoreAuthorizedWallet(): Promise<WalletState | null> {
+  const storage = walletStorage();
+  let preferredId: string | null = null;
+  try {
+    if (storage?.getItem(DISCONNECTED_KEY) === '1') return null;
+    preferredId = storage?.getItem(PROVIDER_KEY) ?? null;
+  } catch {}
+  const providers = await discoverWalletProviders();
+  const ordered = preferredId ? [...providers].sort((a, b) => Number(b.id === preferredId) - Number(a.id === preferredId)) : providers;
+  for (const { provider, name } of ordered) {
+    try {
+      const accounts = await provider.request({ method: 'eth_accounts' }) as string[];
+      const account = accounts[0]?.toLowerCase() as `0x${string}` | undefined;
+      if (!account) continue;
+      const chainId = parseChainId(await provider.request({ method: 'eth_chainId' }));
+      selectedProvider = provider;
+      return { connected: true, connecting: false, account, chainId, providerName: name };
+    } catch {}
+  }
+  return null;
 }
 
 export async function switchToChain(chainId: number): Promise<{ ok: boolean; error?: string }> {
