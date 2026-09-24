@@ -46,7 +46,7 @@ export function renderProof(plan: Plan, readIssue?: ProofReadIssue): string {
           <h2>${escapeHtml(statusLabel(plan.status))}</h2>
           <strong class="receipt-amount">${escapeHtml(formatNativeAmount(plan.depositedAmount))}</strong>
           <dl class="receipt-details">
-            <div><dt>Recipient</dt><dd>${escapeHtml(shortAddress(plan.settlementRecipient ?? plan.successor))}</dd></div>
+            <div><dt>Recipient</dt><dd>${escapeHtml(shortAddress(plan.successor))}</dd></div>
             <div><dt>Observed at</dt><dd>${escapeHtml(formatDateUtc(Number(plan.observation?.blockTimestamp ?? plan.createdAt), true))}</dd></div>
             <div><dt>Transaction evidence</dt><dd>${isRecorded ? 'No transaction attached' : latestReceipt ? 'Confirmed receipt available' : 'No validated receipt on this device'}</dd></div>
             ${latestReceipt ? `<div><dt>Fee</dt><dd>${feeWei !== undefined ? escapeHtml(formatNativeAmount(feeWei)) : 'Unavailable'}</dd></div>` : ''}

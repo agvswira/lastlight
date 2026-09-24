@@ -117,6 +117,13 @@ test('proof keeps the last observation visible with an actionable refresh issue'
   assert.match(markup, /Current plan state/);
 });
 
+test('proof shows the named recipient before the plan is settled', () => {
+  const plan = { ...DEMO_PLAN, settlementRecipient: '0x0000000000000000000000000000000000000000' as const };
+  const markup = renderProof(plan);
+  assert.ok(markup.includes(`<dt>Recipient</dt><dd>${plan.successor.slice(0, 6)}…${plan.successor.slice(-4)}</dd>`));
+  assert.equal(markup.includes('<dt>Recipient</dt><dd>0x0000…0000</dd>'), false);
+});
+
 test('my plans sort priorities by role and label an unknown incoming plan', () => {
   const plan = (vaultId: bigint, status: 'ACTIVE' | 'GRACE' | 'CLAIMABLE', claimableAt: bigint) => ({
     ...DEMO_PLAN,
