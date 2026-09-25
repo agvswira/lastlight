@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/assets/lastlight-mark.png" alt="Lastlight logo" width="120">
+  <img src="public/assets/lastlight-mark.png" alt="Lastlight logo" width="200">
 </p>
 
 <h1 align="center">Lastlight</h1>
